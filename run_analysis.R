@@ -1,5 +1,7 @@
 # Course Project for Getting and Cleaning Data
 #Author: Mitta Suresh
+#
+#LOADING DATA AND MERGING
 # load data from train and test subfolders
 
 x_train=read.table("./train/X_train.txt")
@@ -14,19 +16,20 @@ combo_subject=rbind(subject_train,subject_test)
 combo_activity=rbind(y_train,y_test)
 combodata=rbind(x_train,x_test)
 
+#ADDING DESCRIPTIVE TITLES AND ADD ACTIVITY DESCRIPTION
 # read the variable names file and assign the naems to the column header
 var_names=read.table("features.txt")
 test_head=var_names[,2]
 colnames(combodata)=test_head
 
-#Combine subject and activity columns to the data, add appropriate col names
+##Combine subject and activity columns to the data, add appropriate col names
 combodata=cbind(combo_subject,combo_activity,combodata)
 colnames(combodata)[1]="Subject"
 colnames(combodata)[2]="ACtivity"
 
 # change the Activity Column to have proper description
-# there is probabaly a more elegant and compact way to handle this, but I was running out of time
-#so used theone I know works
+# there is probably a more elegant and compact way to handle this, but I was running out of time
+#so used the one I know works
 
 for (i in 1:nrow(combodata)){
         if (combodata[i,2]=="1")
@@ -47,8 +50,8 @@ for (i in 1:nrow(combodata)){
         } else combodata[i,2]="LYING"      
 }
 
+# REDUCING NUMBER OF COLUMNS TO THOSE OF MEAN AND STD. DEV
 # reduce the number of columns by selecting only those which refer to mean and stad. deviation
-
 # find list of columns which contain words mean or std
 
 
@@ -62,6 +65,7 @@ select_cols=c(1,2,mean_cols,std_cols)
 reduced_data=combodata[,select_cols]
 str(reduced_data)
 
+# CREATING TIDY DATA BY GETTING AVERAGE BASED ON SUBJECT AND ACTIVITY
 # this is the last part of the project to create a tidy set with averaged values
 # initiate a empty data frame and fill it with values, add column names
 tidydata=data.frame(matrix(NA, nrow=180,ncol=81))
